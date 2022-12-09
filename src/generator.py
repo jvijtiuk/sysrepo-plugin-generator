@@ -318,7 +318,7 @@ class Generator:
                     api_file.write(template.render(
                         plugin_prefix=self.prefix, prefix=prefix, node_list=node_list, LyNode=LyNode, to_c_variable=to_c_variable, types=types))
                     self.generated_files.append(
-                        path.replace(self.outdir, "")[1:])
+                        path.replace(self.outdir, "", 1)[1:])
 
         dirs = self.change_api_walker.get_directories()
         dir_functions = self.change_api_walker.get_directory_functions()
@@ -337,7 +337,7 @@ class Generator:
                         api_file.write(template.render(
                             plugin_prefix=self.prefix, prefix=prefix, node_list=node_list, LyNode=LyNode, to_c_variable=to_c_variable, types=types))
                         self.generated_files.append(
-                            path.replace(self.outdir, "")[1:])
+                            path.replace(self.outdir, "", 1)[1:])
 
     def __generate_data_files(self):
         pass
