@@ -20,7 +20,7 @@ class APIContext:
         }
 
         self.types = {
-            "unknown": None,
+            "unknown": "void *",
             "binary": "void *",
             "uint8": "uint8_t",
             "uint16": "uint16_t",
@@ -31,11 +31,11 @@ class APIContext:
             "boolean": "uint8_t",
             "decimal64": "double",
             "empty": "void",
-            "enumeration": None,
-            "identityref": None,
+            "enumeration": "char *",
+            "identityref": "char *",
             "instance-id": None,
             "leafref": None,
-            "union": None,
+            "union": "void *",
             "int8": "int8_t",
             "int16": "int16_t",
             "int32": "int32_t",
@@ -72,7 +72,23 @@ class Walker(TreeWalker):
             new_prefix = last_prefix + to_c_variable(node.name()) + "_"
             self.ctx.prefix_stack[depth + 1] = new_prefix
 
-        if node.nodetype() == LyNode.LEAF or node.nodetype() == LyNode.LEAFLIST or node.nodetype() == LyNode.LIST:
+        if node.nodetype() == LyNode.LIST:
+            if last_path not in self.ctx.dir_functions:
+                self.ctx.dir_functions[last_path] = (last_prefix[:-1], [])
+
+            self.ctx.dir_functions[last_path][1].append(node)
+
+            # update dir stack
+            new_dir = os.path.join(last_path, node.name())
+            self.ctx.dirs_stack[depth +
+                                1] = new_dir
+            self.ctx.dirs.append(new_dir)
+
+            # update prefix stack
+            new_prefix = last_prefix + to_c_variable(node.name()) + "_"
+            self.ctx.prefix_stack[depth + 1] = new_prefix
+
+        if node.nodetype() == LyNode.LEAF or node.nodetype() == LyNode.LEAFLIST:
             if last_path not in self.ctx.dir_functions:
                 self.ctx.dir_functions[last_path] = (last_prefix[:-1], [])
 
