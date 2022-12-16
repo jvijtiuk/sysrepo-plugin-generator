@@ -8,6 +8,7 @@ from libraries.uthash import UTHashLibrary
 from walkers import startup, ly_tree, api, types
 from walkers.subscription import rpc, change, operational
 from walkers import change_api
+import pdb
 
 from utils import extract_defines, to_c_variable
 
@@ -22,6 +23,7 @@ class Generator:
 
         # load all needed modules
         for m in modules:
+            print(m)
             self.ctx.load_module(m)
             self.ctx.get_module(m).feature_enable_all()
 
@@ -308,6 +310,7 @@ class Generator:
         types = self.api_walker.get_types()
         for dir in dirs:
             # generate all files in this directory
+            print("df", dir_functions)
             prefix, node_list = dir_functions[dir]
             for file in files:
                 path = os.path.join(dir, file)
@@ -319,6 +322,26 @@ class Generator:
                         plugin_prefix=self.prefix, prefix=prefix, node_list=node_list, LyNode=LyNode, to_c_variable=to_c_variable, types=types))
                     self.generated_files.append(
                         path.replace(self.outdir, "", 1)[1:])
+
+        notifs = self.api_walker.get_notifs()
+        dirs = self.api_walker.get_notif_directories()
+        notif_files = self.api_walker.get_notif_filenames()
+        for dir in dirs:
+            if dir in notifs:
+                prefix, node_list = notifs[dir]
+                #n = node_list[0]
+                #pdb.set_trace()
+                for file in notif_files:
+                    path = os.path.join(dir, file)
+                    print("\tGenerating {}".format(path))
+                    template = self.jinja_env.get_template(
+                        "src/plugin/api/{}.jinja".format(file))
+                    with open(path, "w") as api_file:
+                        api_file.write(template.render(
+                            plugin_prefix=self.prefix, prefix=prefix, node_list=node_list, LyNode=LyNode, to_c_variable=to_c_variable, types=types))
+                        self.generated_files.append(
+                            path.replace(self.outdir, "", 1)[1:])
+
 
         dirs = self.change_api_walker.get_directories()
         dir_functions = self.change_api_walker.get_directory_functions()

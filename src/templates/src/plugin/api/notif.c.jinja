@@ -1,0 +1,30 @@
+#include "notif.h"
+{% for node in node_list %}
+int {{prefix}}{{"_" if prefix != "" else ""}}send_notif_{{to_c_variable(node.name())}}({{plugin_prefix}}_ctx_t *ctx)
+{
+	int rc = SR_ERR_OK;
+	struct lyd_node *notif = NULL;
+	sr_conn_ctx_t *conn = NULL;
+	const struct ly_ctx *ctx = NULL;
+
+	conn = sr_session_get_connection(ctx->startup_session);
+	ctx = sr_acquire_context(conn);
+
+	if (lyd_new_path(NULL, ctx, "{{prefix.upper() + '_' + to_c_variable(node.name()).upper() + '_YANG_PATH'}}", NULL, 0, &notif)) {
+		return -1;
+	}
+
+	{% for c in node.children() %}
+	if (lyd_new_path(notif, NULL, "{{prefix.upper() + '_' + to_c_variable(node.name()).upper() + '_' + to_c_variable(c.name()).upper() + '_YANG_PATH'}}", NULL, 0, NULL)) {
+		return -1;
+	}
+	{% endfor %}
+
+	rc = sr_notif_send_tree(ctx->startup_session, notif, 0, 0);
+	if (rc != SR_ERR_OK) {
+		return -1;
+	}
+
+	return 0;
+}
+{% endfor %}
