@@ -312,6 +312,8 @@ class Generator:
             # generate all files in this directory
             print("df", dir_functions)
             prefix, node_list = dir_functions[dir]
+            if not node_list:
+                continue
             for file in files:
                 path = os.path.join(dir, file)
                 print("\tGenerating {}".format(path))
@@ -351,6 +353,8 @@ class Generator:
             # generate all files in this directory
             if dir in dir_functions:
                 prefix, node_list = dir_functions[dir]
+                if not node_list:
+                    continue
                 for file in files:
                     path = os.path.join(dir, file)
                     print("\tGenerating {}".format(path))
