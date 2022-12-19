@@ -22,8 +22,15 @@ int {{fn.get_name()}}(const struct ly_ctx *ly_ctx, struct lyd_node **{{ fn.name 
 
 int {{fn.get_name()}}(const struct ly_ctx *ly_ctx, struct lyd_node *{{ fn.parent_name }}_node, struct lyd_node **{{ fn.name }}_node{% for key in fn.node.keys() %}, const char *{{to_c_variable(key.name())}}{% endfor %})
 {
-    // TODO: fix this for multiple keys with SRPC library
-    return srpc_ly_tree_create_list(ly_ctx, {{ fn.parent_name }}_node, {{ fn.name }}_node, "{{ fn.node.name() }}", "name", name);
+    srpc_key_value_pair_t kv_pairs[] = {
+        {% for key in fn.node.keys() %}
+        {
+        .key = "{{key.name()}}",
+        .value = {{to_c_variable(key.name())}},
+        },
+        {% endfor %}
+    };
+    return srpc_ly_tree_create_list_full(ly_ctx, {{ fn.parent_name }}_node, {{ fn.name }}_node, "{{ fn.node.name() }}", kv_pairs, sizeof(kv_pairs) / sizeof(srpc_key_value_pair_t));
 }
     {% endif %}
     {% if fn.node.nodetype() == LyNode.LEAFLIST %}
