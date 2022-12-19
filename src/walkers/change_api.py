@@ -77,6 +77,10 @@ class Walker(TreeWalker):
             new_prefix = last_prefix + to_c_variable(node.name()) + "_"
             self.ctx.prefix_stack[depth + 1] = new_prefix
 
+            if node.presence():
+                self.ctx.dir_functions[new_dir] = (new_prefix[:-1], [])
+                self.ctx.dir_functions[new_dir][1].append(node)
+
         if node.nodetype() == LyNode.LIST:
             # append list callback to the current dir
             if last_path not in self.ctx.dir_functions:

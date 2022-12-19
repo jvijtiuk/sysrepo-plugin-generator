@@ -85,6 +85,10 @@ class Walker(TreeWalker):
             self.ctx.prefix_stack[depth + 1] = new_prefix
             self.ctx.notif_prefix_stack[depth + 1] = new_notif_prefix
 
+            if node.presence():
+                self.ctx.dir_functions[new_dir] = (new_prefix[:-1], [])
+                self.ctx.dir_functions[new_dir][1].append(node)
+
         if node.nodetype() == LyNode.LIST:
             if last_path not in self.ctx.dir_functions:
                 self.ctx.dir_functions[last_path] = (last_prefix[:-1], [])
