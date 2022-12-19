@@ -1,16 +1,20 @@
 #include "notif.h"
+
+#include <libyang/libyang.h>
+#include <sysrepo.h>
+
 {% for node in node_list %}
 int {{prefix}}{{"_" if prefix != "" else ""}}send_notif_{{to_c_variable(node.name())}}({{plugin_prefix}}_ctx_t *ctx)
 {
 	int rc = SR_ERR_OK;
 	struct lyd_node *notif = NULL;
 	sr_conn_ctx_t *conn = NULL;
-	const struct ly_ctx *ctx = NULL;
+	const struct ly_ctx *ly_ctx = NULL;
 
 	conn = sr_session_get_connection(ctx->startup_session);
 	ctx = sr_acquire_context(conn);
 
-	if (lyd_new_path(NULL, ctx, "{{prefix.upper() + '_' + to_c_variable(node.name()).upper() + '_YANG_PATH'}}", NULL, 0, &notif)) {
+	if (lyd_new_path(NULL, ly_ctx, "{{prefix.upper() + '_' + to_c_variable(node.name()).upper() + '_YANG_PATH'}}", NULL, 0, &notif)) {
 		return -1;
 	}
 
