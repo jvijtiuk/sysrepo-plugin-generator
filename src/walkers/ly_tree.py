@@ -1,5 +1,6 @@
 from tree_walker import TreeWalker
 from utils import to_c_variable
+import pdb
 
 from libyang.schema import Node as LyNode
 
@@ -36,6 +37,7 @@ class Walker(TreeWalker):
         self.ctx = LibyangTreeContext(prefix)
 
     def walk_node(self, node, depth):
+        #pdb.set_trace()
         parent, parent_prefix = self.ctx.parent_stack[depth]
 
         if node.nodetype() in [LyNode.CONTAINER, LyNode.LIST]:
