@@ -1,6 +1,7 @@
 from typing import List
 from tree_walker import TreeWalker
 from libyang.schema import Node as LyNode
+import pdb
 
 from utils import to_c_variable
 
@@ -109,8 +110,6 @@ class Walker(TreeWalker):
                 self.ctx.enums.append(enum_ed)
                 self.ctx.typedefs.append(enum_td)
 
-                self.ctx.typedef_map[enum_name] = enum_ed
-
                 # previous value has to be a struct of some kind
                 self.ctx.typedef_map[struct_name].vars.append(
                     VarDef(enum_td.typedef, to_c_variable(node.name()), "enum"))
@@ -166,8 +165,6 @@ class Walker(TreeWalker):
 
                 self.ctx.enums.append(enum_ed)
                 self.ctx.typedefs.append(enum_td)
-
-                self.ctx.typedef_map[enum_name] = enum_ed
 
                 # previous value has to be a struct of some kind
                 self.ctx.typedef_map[struct_name].vars.append(
