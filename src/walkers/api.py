@@ -70,9 +70,6 @@ class Walker(TreeWalker):
         last_notif_prefix = self.ctx.notif_prefix_stack[depth]
 
         if node.nodetype() == LyNode.CONTAINER:
-            if last_path not in self.ctx.dir_functions:
-                self.ctx.dir_functions[last_path] = (last_prefix[:-1], [])
-
             # update dir stack
             new_dir = os.path.join(last_path, node.name())
             self.ctx.dirs_stack[depth +

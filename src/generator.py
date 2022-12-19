@@ -310,10 +310,9 @@ class Generator:
         types = self.api_walker.get_types()
         for dir in dirs:
             # generate all files in this directory
-            print("df", dir_functions)
-            prefix, node_list = dir_functions[dir]
-            if not node_list:
+            if dir not in dir_functions:
                 continue
+            prefix, node_list = dir_functions[dir]
             for file in files:
                 path = os.path.join(dir, file)
                 print("\tGenerating {}".format(path))
@@ -353,8 +352,6 @@ class Generator:
             # generate all files in this directory
             if dir in dir_functions:
                 prefix, node_list = dir_functions[dir]
-                if not node_list:
-                    continue
                 for file in files:
                     path = os.path.join(dir, file)
                     print("\tGenerating {}".format(path))
