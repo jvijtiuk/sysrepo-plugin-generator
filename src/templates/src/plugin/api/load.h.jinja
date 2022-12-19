@@ -12,7 +12,11 @@ int {{prefix}}_load_{{to_c_variable(node.name())}}({{plugin_prefix}}_ctx_t *ctx,
 int {{prefix}}_load_{{to_c_variable(node.name())}}({{plugin_prefix}}_ctx_t *ctx, UT_array **{{to_c_variable(node.name())}});
     {% endif %}
     {% if node.nodetype() == LyNode.LEAF %}
-int {{prefix}}_load_{{to_c_variable(node.name())}}({{plugin_prefix}}_ctx_t *ctx, {{types[node.type().basename()]}}{{" " if types[node.type().basename()] != None and types[node.type().basename()][-1:] != "*" else ""}}*{{to_c_variable(node.name())}});
+        {% if types[node.type().basename()] == None %}
+int {{prefix}}_load_{{to_c_variable(node.name())}}({{plugin_prefix}}_ctx_t *ctx);
+        {% else %}
+int {{prefix}}_load_{{to_c_variable(node.name())}}({{plugin_prefix}}_ctx_t *ctx, {{types[node.type().basename()]}}{{" " if types[node.type().basename()][-1:] != "*" else ""}}*{{to_c_variable(node.name())}});
+        {% endif %}
     {% endif %}
 {% endfor %}
 
