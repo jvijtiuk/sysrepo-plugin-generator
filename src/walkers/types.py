@@ -157,7 +157,7 @@ class Walker(TreeWalker):
             if node.type().basename() == "enumeration":
                 # add enum type
                 enum_name = to_c_variable(
-                    "{}_{}".format(full_prefix, node.name()))
+                    "{}_{}_enum".format(full_prefix, node.name()))
 
                 enum_ed = EnumDef(enum_name, [to_c_variable("{}_{}".format(
                     enum_name, str(e))) for e in node.type().enums()])
