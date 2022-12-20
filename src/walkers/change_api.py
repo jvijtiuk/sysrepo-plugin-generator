@@ -77,6 +77,8 @@ class Walker(TreeWalker):
             if node.presence():
                 self.ctx.dir_functions[new_dir] = (new_prefix[:-1], [])
                 self.ctx.dir_functions[new_dir][1].append(node)
+                self.ctx.path_map[node.data_path()] = (
+                    new_prefix[:-1], node)
 
         if node.nodetype() == LyNode.LIST:
             # append list callback to the current dir

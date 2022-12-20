@@ -4,13 +4,13 @@
 #include <sysrepo.h>
 
 {% for node in node_list %}
-int {{prefix}}_change_{{to_c_variable(node.name())}}_init(void *priv)
+int {{prefix}}_change_{{to_c_variable(node.name() + ("_cont" if node.nodetype() == LyNode.CONTAINER else "_list" if node.nodetype() == LyNode.LIST else ""))}}_init(void *priv)
 {
 	int error = 0;
 	return error;
 }
 
-int {{prefix}}_change_{{to_c_variable(node.name())}}(void *priv, sr_session_ctx_t *session, const srpc_change_ctx_t *change_ctx)
+int {{prefix}}_change_{{to_c_variable(node.name() + ("_cont" if node.nodetype() == LyNode.CONTAINER else "_list" if node.nodetype() == LyNode.LIST else ""))}}(void *priv, sr_session_ctx_t *session, const srpc_change_ctx_t *change_ctx)
 {
 	int error = 0;
 	const char *node_name = LYD_NAME(change_ctx->node);
@@ -32,7 +32,7 @@ int {{prefix}}_change_{{to_c_variable(node.name())}}(void *priv, sr_session_ctx_
 	return error;
 }
 
-void {{prefix}}_change_{{to_c_variable(node.name())}}_free(void *priv)
+void {{prefix}}_change_{{to_c_variable(node.name() + ("_cont" if node.nodetype() == LyNode.CONTAINER else "_list" if node.nodetype() == LyNode.LIST else ""))}}_free(void *priv)
 {
 }
 
