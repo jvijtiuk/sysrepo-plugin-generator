@@ -3,8 +3,8 @@
 #include <libyang/libyang.h>
 #include <sysrepo.h>
 
-{% for node in node_list %}
-int {{prefix}}{{"_" if prefix != "" else ""}}send_notif_{{to_c_variable(node.name())}}({{plugin_prefix}}_ctx_t *ctx)
+{% for notif in node_list %}
+int {{prefix}}{{"_" if prefix != "" else ""}}send_notif_{{to_c_variable(notif[0].name())}}({{plugin_prefix}}_ctx_t *ctx)
 {
 	int rc = SR_ERR_OK;
 	struct lyd_node *notif = NULL;
@@ -14,12 +14,12 @@ int {{prefix}}{{"_" if prefix != "" else ""}}send_notif_{{to_c_variable(node.nam
 	conn = sr_session_get_connection(ctx->startup_session);
 	ly_ctx = sr_acquire_context(conn);
 
-	if (lyd_new_path(NULL, ly_ctx, "{{prefix.upper() + '_' + to_c_variable(node.name()).upper() + '_YANG_PATH'}}", NULL, 0, &notif)) {
+	if (lyd_new_path(NULL, ly_ctx, "{{prefix.upper() + '_' + to_c_variable(notif[0].name()).upper() + '_YANG_PATH'}}", NULL, 0, &notif)) {
 		return -1;
 	}
 
-	{% for c in node.children() %}
-	if (lyd_new_path(notif, NULL, "{{prefix.upper() + '_' + to_c_variable(node.name()).upper() + '_' + to_c_variable(c.name()).upper() + '_YANG_PATH'}}", NULL, 0, NULL)) {
+	{% for c in notif[1] %}
+	if (lyd_new_path(notif, NULL, "{{prefix.upper() + '_' + to_c_variable(notif[0].name()).upper() + '_' + to_c_variable(c.name()).upper() + '_YANG_PATH'}}", NULL, 0, NULL)) {
 		return -1;
 	}
 	{% endfor %}

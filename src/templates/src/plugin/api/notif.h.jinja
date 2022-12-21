@@ -4,8 +4,8 @@
 #include "plugin/context.h"
 #include "plugin/common.h"
 
-{% for node in node_list %}
-int {{prefix}}{{"_" if prefix != "" else ""}}send_notif_{{to_c_variable(node.name())}}({{plugin_prefix}}_ctx_t *ctx);
+{% for notif in node_list %}
+int {{prefix}}{{"_" if prefix != "" else ""}}send_notif_{{to_c_variable(notif[0].name())}}({{plugin_prefix}}_ctx_t *ctx);
 {% endfor %}
 
 #endif // {{plugin_prefix.upper()}}_PLUGIN_API_{{prefix.upper()}}_NOTIF_H

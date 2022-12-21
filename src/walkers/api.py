@@ -116,7 +116,16 @@ class Walker(TreeWalker):
             if last_path not in self.ctx.notifs:
                 self.ctx.notifs[last_path] = (last_notif_prefix[:-1], [])
 
-            self.ctx.notifs[last_path][1].append(node)
+            notif_nodes = []
+            nodes = list(node.children())
+            while nodes:
+                n = nodes.pop()
+                if n.nodetype() in [LyNode.LIST, LyNode.CONTAINER]:
+                    nodes.extend(n.children())
+                notif_nodes.append(n)
+
+            notif_nodes.reverse()
+            self.ctx.notifs[last_path][1].append((node, notif_nodes))
             return True
 
         return False
