@@ -80,6 +80,8 @@ class Walker(TreeWalker):
             else:
                 output_nodes.append(n)
 
+        input_nodes.reverse()
+        output_nodes.reverse()
         self.ctx.callbacks.append((Callback(node.data_path(),
                                            to_c_variable(node.name())), (input_nodes, output_nodes)))
 
