@@ -293,7 +293,13 @@ class Generator:
 
     def __generate_subscription_rpc_c(self):
         self.__generate_file("src/plugin/subscription/rpc.c", plugin_prefix=self.prefix,
-                             rpc_callbacks=self.rpc_walker.get_callbacks())
+                             rpc_callbacks=self.rpc_walker.get_callbacks(),
+                             types=self.api_walker.get_types(),
+                             to_c_variable=to_c_variable,
+                             sr_val_types=self.rpc_walker.get_types(),
+                             sr_val_struct_types=self.rpc_walker.get_struct_types(),
+                             len=len,
+                             list=list)
 
     def __generate_ly_tree_h(self):
         self.__generate_file("src/plugin/ly_tree.h",  plugin_prefix=self.prefix,

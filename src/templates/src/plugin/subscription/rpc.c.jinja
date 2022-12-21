@@ -7,9 +7,26 @@
 #include <srpc.h>
 
 {% for cb in rpc_callbacks %}
-int {{plugin_prefix}}_subscription_rpc_{{cb.sufix}}(sr_session_ctx_t *session, uint32_t subscription_id, const char *op_path, const sr_val_t *input, const size_t input_cnt, sr_event_t event, uint32_t request_id, sr_val_t **output, size_t *output_cnt, void *private_data)
+int {{plugin_prefix}}_subscription_rpc_{{cb[0].sufix}}(sr_session_ctx_t *session, uint32_t subscription_id, const char *op_path, const sr_val_t *input, const size_t input_cnt, sr_event_t event, uint32_t request_id, sr_val_t **output, size_t *output_cnt, void *private_data)
 {
 	int error = SR_ERR_OK;
+    {% for i in cb[1][0] %}
+	{{types[i.type().basename()] + " " + to_c_variable(i.name()) + ";" if types[i.type().basename()] != None else ""}}
+    {% endfor %}
+
+    {% for i in cb[1][0] %}
+        {% if sr_val_struct_types[i.type().basename()] != "" %}
+	{{to_c_variable(i.name())}} = input[{{loop.index0}}].data.{{sr_val_struct_types[i.type().basename()]}};
+        {% endif %}
+    {% endfor %}
+
+	*output = calloc({{len(list(cb[1][1]))}}, sizeof **output);
+	*output_cnt = {{len(list(cb[1][1]))}};
+    {% for o in cb[1][1] %}
+	(*output)[{{loop.index0}}].xpath = strdup("{{o.data_path()}}");
+        (*output)[{{loop.index0}}].type = {{sr_val_types[o.type().basename()]}};
+    {% endfor %}
+
 	return error;
 }
 
