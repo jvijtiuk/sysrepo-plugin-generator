@@ -307,7 +307,8 @@ class Generator:
 
     def __generate_ly_tree_c(self):
         self.__generate_file("src/plugin/ly_tree.c",  plugin_prefix=self.prefix,
-                             ly_tree_functions=self.ly_tree_walker.get_functions(), LyNode=LyNode, to_c_variable=to_c_variable)
+                             ly_tree_functions=self.ly_tree_walker.get_functions(), LyNode=LyNode, to_c_variable=to_c_variable,
+                             len=len, list=list)
 
     def __generate_api_files(self):
         print("Generating API files:")
