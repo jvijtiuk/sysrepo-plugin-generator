@@ -24,6 +24,11 @@ class Walker(TreeWalker):
                                                to_c_variable(last_prefix + "_" + node.name())[1:]))
 
             # return True
+        elif node.nodetype() == LyNode.CONTAINER and node.presence() and node.config_false():
+            self.ctx.callbacks.append(Callback(node.data_path(),
+                                               to_c_variable(last_prefix + "_" + node.name())[1:]))
+            self.ctx.prefix_stack[depth+1] = last_prefix + \
+                "_" + to_c_variable(node.name())
         elif node.nodetype() == LyNode.LIST:
             # also add optional list callback
             self.ctx.callbacks.append(Callback(node.data_path(),
