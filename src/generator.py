@@ -206,6 +206,8 @@ class Generator:
         # cmake with all files to compile
         self.__generate_cmake_lists()
 
+        self.__generate_gitignore()
+
         # apply style
         self.__apply_clang_format()
 
@@ -395,6 +397,9 @@ class Generator:
             "CMakeLists.txt", plugin_prefix=self.prefix, source_files=[file for file in self.generated_files if file[-2:] == ".c"], include_dirs=self.include_dirs)
         self.__generate_file(
             "CompileOptions.cmake")
+
+    def __generate_gitignore(self):
+        self.__generate_file(".gitignore")
 
     def __apply_clang_format(self):
         print("Applying .clang-format style")
